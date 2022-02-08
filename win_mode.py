@@ -21,9 +21,11 @@ COMP_WEIGHTS = (5, 4, 3, 2, 1)
 #####=====----- Classes -----=====#####
 
 class GameCell():
-    ''' Одиночная игровая клетка
-    '''
     def __init__(self):
+        ''' Объект одной клетки игрового поля в виде кнопки (butt) и с атрибутами
+            координаты (pos), контента пусто/крестик/нолик (xo), весом для
+            алгоритма выбора следующего хода (weight).
+        '''
         b_ = QPushButton('')
         b_.setFixedSize(QSize(30, 30))
         self.cell_dict = {
@@ -42,11 +44,6 @@ class GameField():
                                                          for row_ in range(FIELD_ROWS)]
         for pos_ in POS_LIST:
             self.field_array[pos_[0]][pos_[1]]['pos'] = pos_
-            #####self.field_array[pos_[0]][pos_[1]]['butt'].clicked.connect(lambda: self.butt_clicked(pos_))
-
-    def butt_clicked(self, row_, col_):
-        self.field_array[row_][col_]['butt'].setText('X')
-        print('COORD ', row_, col_)
 
 
 class OwenWindow(QWidget):
@@ -93,7 +90,8 @@ class OwenWindow(QWidget):
                 self.gamefield.field_array[row_ - s_][col_ - s_]['weight'] += weights_tuple_[s_]
 
     def check_line(self, row_, col_, xo_):
-        ''' Проверяет наличие пяти X или O в линию и прекращает игру, если есть.
+        ''' Проверяет наличие пяти X или O в линию и выдаёт сообщение в строке
+            статуса, если есть.
         '''
         horiz_line_ = ''
         verti_line_ = ''
@@ -114,15 +112,12 @@ class OwenWindow(QWidget):
            (risin_line_.find(looser_line_) > -1) or \
            (falln_line_.find(looser_line_) > -1):
             if xo_ == 'X':
-                #####print(u'Вы проиграли!')
-                pass
+                self.status_line_.setText(u'Вы проиграли! Начните заново.')
             if xo_ == 'O':
-                #####print(u'Вы победили!')
-                pass
-            QCoreApplication.instance().quit
+                self.status_line_.setText(u'Вы победили! Начните заново.')
 
     def check_end(self):
-        ''' Заканчивает игру, когда не осталось свободных клеток.
+        ''' Выдаёт сообщение в строке статуса, когда не осталось свободных клеток.
         '''
         empty_cells_ = 0
         for row_ in self.gamefield.field_array:
@@ -130,10 +125,11 @@ class OwenWindow(QWidget):
                 if cell_['xo'] == '.':
                     empty_cells_ += 1
         if empty_cells_ == 0:
-            #####print(u'Нет свободных клеток. Ничья!')
-            QCoreApplication.instance().quit
+            self.status_line_.setText(u'Нет свободных клеток. Ничья! Начните заново.')
 
     def dude_answer(self, row_, col_):
+        ''' Отображает ход игрока и проверяет "пять X в линию"
+        '''
         self.gamefield.field_array[row_][col_]['butt'].setText('X')
         self.gamefield.field_array[row_][col_]['xo'] = 'X'
         self.write_weights(row_, col_, 'X')
@@ -164,6 +160,8 @@ class OwenWindow(QWidget):
         self.check_line(r_, c_, 'O')
 
     def put_signs(self, bu_, row_, col_):
+        ''' Принимает ход игрока и делает ход компьютера
+        '''
         if self.gamefield.field_array[row_][col_]['xo'] == '.':
             self.dude_answer(row_, col_)
             self.check_end()
@@ -171,10 +169,21 @@ class OwenWindow(QWidget):
             self.check_end()
 
     def game_begin(self, who_first_):
+        ''' Инициализирует новую игру. Делает первый ход компьютера, если
+            выбрана соответствующая кнопка.
+        '''
+        for row_ in self.gamefield.field_array:
+            for cell_ in row_:
+                cell_['butt'].setText('')
+                cell_['xo'] = '.'
+                cell_['weight'] = 0
+        self.status_line_.setText(u'Игра в процессе. Удачи!')
         if who_first_ == 2:
             self.comp_answer()
 
     def setup_main_win(self):
+        ''' Создание главного окна программы
+        '''
         self.setWindowTitle('Reversed Tic-Tac-Toe')
         self.setup_geom()
 
@@ -200,7 +209,8 @@ class OwenWindow(QWidget):
             #####bu_.clicked.connect(lambda: self.put_signs(bu_, pos_))
             self.gamefield_layout_.addWidget(bu_, *pos_)
         ''' Ниже начинается позорный костыль, потому что не отработались привязки
-            событий к слотам в цикле for выше. Пришлось пока захардкодить.
+            событий к слотам в цикле FOR выше (закомментированная строка).
+            Пришлось пока захардкодить.
         '''
         bu00_ = self.gamefield.field_array[0][0]['butt']
         bu00_.clicked.connect(lambda: self.put_signs(bu00_, 0, 0))
@@ -405,10 +415,10 @@ class OwenWindow(QWidget):
         ''' Конец позорного костыля
         '''
 
-        status_line_ = QLabel()
-        status_line_.setText('Ready to play. Choose who first.')
+        self.status_line_ = QLabel()
+        self.status_line_.setText(u'Вы играете крестиками. Компьютер - ноликами.\nВыберите, кто сделает первый ход.')
         self.bottom_layout_ = QHBoxLayout()
-        self.bottom_layout_.addWidget(status_line_)
+        self.bottom_layout_.addWidget(self.status_line_)
         self.bottom_layout_.addWidget(button_exit_)
 
         main_layout_ = QVBoxLayout()
@@ -421,7 +431,6 @@ class OwenWindow(QWidget):
 #####=====----- MAIN -----=====#####
 
 if __name__ == '__main__':
-    #####POS_LIST = [(row_, col_) for row_ in range(FIELD_ROWS) for col_ in range(FIELD_COLS)]
     app_ = QApplication([])
     prog_window_ = OwenWindow()
     prog_window_.show()
