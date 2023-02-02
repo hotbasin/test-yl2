@@ -6,7 +6,7 @@ from sys import exit
 import game_stuff as g_
 
 
-''' =====----- Variables -----===== '''
+#####=====----- Variables -----=====#####
 
 FIELD_ROWS = g_.FIELD_ROWS
 FIELD_COLS = g_.FIELD_COLS
@@ -14,14 +14,10 @@ DUDE_WEIGHTS = (10, 8, 6, 4, 2)
 COMP_WEIGHTS = (5, 4, 3, 2, 1)
 
 
-''' =====----- Functions -----===== '''
+#####=====----- Functions -----=====#####
 
 def draw_field(cell_array_):
-    ''' Called in game_cycle() and check_line().
-    Forms the current multi-line state of the game field fot output
-    to the console.
-    -----
-    Используется в game_cycle() и check_line().
+    ''' Используется в game_cycle() и check_line().
     Формирует многострочник текущего состояния игрового поля для вывода
     на консоль.
     Arguments:
@@ -45,10 +41,7 @@ def draw_field(cell_array_):
     return output_str_
 
 def write_weights(cell_array_, row_, col_, xo_):
-    ''' Called in dude_answer() and comp_answer().
-    Writes weight coefficients to the ['xo'] attribute of cell objects.
-    -----
-    Используется в dude_answer() и comp_answer().
+    ''' Используется в dude_answer() и comp_answer().
     Запись весовых коэффициентов в атрибут ['xo'] объектов клеток поля.
     Arguments:
         cell_array_ [list] -- Двумерный массив (список списков) объектов
@@ -82,11 +75,7 @@ def write_weights(cell_array_, row_, col_, xo_):
             cell_array_[row_ - s_][col_ - s_].weight += weights_tuple_[s_]
 
 def check_line(cell_array_, row_, col_, xo_):
-    ''' Called in dude_answer() and comp_answer().
-    Checks the existence of five X or O in a line and stops the game
-    if there are.
-    -----
-    Используется в dude_answer() и comp_answer().
+    ''' Используется в dude_answer() и comp_answer().
     Проверяет наличие пяти X или O в линию и прекращает игру, если есть.
     Arguments:
         cell_array_ [list] -- Двумерный массив (список списков) объектов
@@ -127,10 +116,7 @@ def check_line(cell_array_, row_, col_, xo_):
         exit()
 
 def check_end(cell_array_):
-    ''' Called in put_signs().
-    Ends the game if there are no free cells left.
-    -----
-    Используется в put_signs().
+    ''' Используется в put_signs().
     Заканчивает игру, когда не осталось свободных клеток.
     Arguments:
         cell_array_ [list] -- Двумерный массив (список списков) объектов
@@ -145,11 +131,7 @@ def check_end(cell_array_):
         exit()
 
 def dude_answer(cell_array_, row_, col_):
-    ''' Called in put_signs().
-    Puts the player move data into a matrix and checks the existence of
-    five X in a line.
-    -----
-    Используется в put_signs().
+    ''' Используется в put_signs().
     Заносит данные хода игрока в матрицу и проверяет "пять X в линию".
     Arguments:
         cell_array_ [list] -- Двумерный массив (список списков) объектов
@@ -161,12 +143,7 @@ def dude_answer(cell_array_, row_, col_):
     check_line(cell_array_, row_, col_, 'X')
 
 def comp_answer(cell_array_):
-    ''' Called in put_signs() and game_cycle().
-    Computer move. Selects free cells with a minimum weight and randomly
-    chooses one of them for a move. Puts the data into a matrix and
-    checks the existence of five O in a line.
-    -----
-    Используется в put_signs() и game_cycle().
+    ''' Используется в put_signs() и game_cycle().
     Ход компьютера. Отбирает свободные клетки с минимальным весом и уже
     из них выбирает одну для хода. Заносит данные в матрицу и проверяет
     "пять O в линию".
@@ -192,10 +169,7 @@ def comp_answer(cell_array_):
     check_line(cell_array_, r_, c_, 'O')
 
 def put_signs(cell_array_, str_):
-    ''' Called in game_cycle().
-    Accepts the player's choice string and makes the computer's move
-    -----
-    Используется в game_cycle().
+    ''' Используется в game_cycle().
     Принимает строку выбора игрока и делает ход компьютера.
     Arguments:
         cell_array_ [list] -- Двумерный массив (список списков) объектов
@@ -241,7 +215,7 @@ def game_cycle(cell_array_, who_first_):
         put_signs(cell_array_, coords)
 
 
-''' =====----- MAIN -----===== '''
+#####=====----- MAIN -----=====#####
 
 if __name__ == '__main__':
     game_field = g_.GameField()
